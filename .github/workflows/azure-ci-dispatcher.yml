@@ -105,7 +105,7 @@ jobs:
                 "resources": {
                   "repositories": {
                     "self": {
-                      "refName": "${{ github.ref }}"
+                      "refName": "refs/pull/${{ github.event.pull_request.number }}/merge"
                     }
                   }
                 }

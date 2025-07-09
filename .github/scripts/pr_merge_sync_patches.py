@@ -32,7 +32,7 @@ import subprocess
 import logging
 import tempfile
 import re
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from pathlib import Path
 from github_cli_client import GitHubCLIClient
 from config_loader import load_repo_config

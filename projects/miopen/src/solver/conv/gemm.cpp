@@ -207,12 +207,12 @@ size_t GemmFwd1x1_0_2::GetWorkspaceSize(const ExecutionContext& context,
     const auto y_t_size   = yDesc.GetElementSize() * GetTypeSize(yDesc.GetType());
     const auto gemm_trans = x_t_size + y_t_size;
 
-    // if(gemm_trans > gemm::MaxMemAllocSz(handle, problem))
-    // {
-    //     MIOPEN_LOG_I2("GemmFwd1x1_0_2:" << gemm_trans << " > "
-    //                                     << gemm::MaxMemAllocSz(handle, problem));
-    //     return 0;
-    // }
+    if(gemm_trans > gemm::MaxMemAllocSz(handle, problem))
+    {
+        MIOPEN_LOG_I2("GemmFwd1x1_0_2:" << gemm_trans << " > "
+                                        << gemm::MaxMemAllocSz(handle, problem));
+        return 0;
+    }
     return gemm_trans;
 #else
     std::ignore = context;
@@ -844,12 +844,12 @@ size_t GemmFwdRest::GetWorkspaceSize(const ExecutionContext& context,
 
     const auto ws_sz = (wDesc.GetType() == miopenInt8 ? 2 * workspace_size : workspace_size);
 
-    if(ws_sz > gemm::MaxMemAllocSz(handle, problem, true))
-    {
-        MIOPEN_LOG_I2("GemmFwdRest: " << ws_sz << " > "
-                                      << gemm::MaxMemAllocSz(handle, problem, true));
-        return 0;
-    }
+    // if(ws_sz > gemm::MaxMemAllocSz(handle, problem, true))
+    // {
+    //     MIOPEN_LOG_I2("GemmFwdRest: " << ws_sz << " > "
+    //                                   << gemm::MaxMemAllocSz(handle, problem, true));
+    //     return 0;
+    // }
     return ws_sz;
 #else
     std::ignore = context;

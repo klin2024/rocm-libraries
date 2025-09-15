@@ -4931,6 +4931,7 @@ private:
 };
 
 
+// GemmFwd + hipblaslt
 struct MIOPEN_INTERNALS_EXPORT GemmFwd1x1_0_2_hipblaslt : public GemmFwd1x1_0_2 {
     const std::string& SolverDbId() const override { return GetSolverDbId<GemmFwd1x1_0_2_hipblaslt>(); }
 
@@ -4955,8 +4956,7 @@ struct MIOPEN_INTERNALS_EXPORT GemmFwdRest_hipblaslt : public GemmFwdRest {
     const GemmBackend_t GetGemmBackend() const override { return GemmBackend_t::hipblaslt; }
 };
 
-
-
+// GemmBwd + hipblaslt
 struct MIOPEN_INTERNALS_EXPORT GemmBwd1x1_stride2_hipblaslt : public GemmBwd1x1_stride2 {
     const std::string& SolverDbId() const override { return GetSolverDbId<GemmBwd1x1_stride2_hipblaslt>(); }
 
@@ -4975,7 +4975,7 @@ struct MIOPEN_INTERNALS_EXPORT GemmBwdRest_hipblaslt : public GemmBwdRest {
     const GemmBackend_t GetGemmBackend() const override { return GemmBackend_t::hipblaslt; }
 };
 
-
+// GemmWrw + hipblaslt
 struct MIOPEN_INTERNALS_EXPORT GemmWrw1x1_stride1_hipblaslt : public GemmWrw1x1_stride1 {
     const std::string& SolverDbId() const override { return GetSolverDbId<GemmWrw1x1_stride1_hipblaslt>(); }
 

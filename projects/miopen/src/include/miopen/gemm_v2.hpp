@@ -72,6 +72,7 @@ struct GemmDescriptor
     miopenDataType_t a_cast_type;
     miopenDataType_t b_cast_type;
     ConvolutionAttribute conv_attributes;
+    GemmBackend_t gemm_backend;
     GemmDescriptor() = delete;
     GemmDescriptor(bool isColMajor_,
                    bool transA_,
@@ -89,7 +90,8 @@ struct GemmDescriptor
                    float alpha_,
                    float beta_,
                    miopenDataType_t dataType_,
-                   bool deterministic_)
+                   bool deterministic_,
+                   GemmBackend_t gemm_backend_ = GemmBackend_t::rocblas)
         : isColMajor(isColMajor_),
           transA(transA_),
           transB(transB_),
@@ -109,7 +111,8 @@ struct GemmDescriptor
           deterministic(deterministic_),
           gfx90a_alt_impl(false),
           a_cast_type(dataType),
-          b_cast_type(dataType)
+          b_cast_type(dataType),
+          gemm_backend(gemm_backend_)
     {
     }
 

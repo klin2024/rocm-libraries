@@ -255,6 +255,9 @@ ConvSolution GemmFwd1x1_0_2::GetSolution(const ExecutionContext& context,
     decltype(auto) wDesc = problem.GetWeights();
     decltype(auto) yDesc = problem.GetOut();
 
+    MIOPEN_LOG_I2("GemmFwd1x1_0_2 GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     const GemmDescriptor tmp_gemm_desc = [&]() {
         auto tmp          = conv.group_count > 1
                                 ? CreateGemmDescriptorGroupConvCNHWFwd(wDesc, xDesc, yDesc, conv.group_count)
@@ -269,6 +272,7 @@ ConvSolution GemmFwd1x1_0_2::GetSolution(const ExecutionContext& context,
                 tmp.b_cast_type = *xDesc.GetCastType();
         }
         tmp.conv_attributes = problem.GetConv().attribute;
+        tmp.gemm_backend = gemm_backend;
         return tmp;
     }();
 
@@ -382,7 +386,7 @@ ConvSolution GemmFwd1x1_0_2::GetSolution(const ExecutionContext& context,
                                                      0,
                                                      workSpace,
                                                      x_t_size,
-                                                     GemmBackend_t::rocblas);
+                                                     gemm_backend);
             }
             else
             {
@@ -395,7 +399,7 @@ ConvSolution GemmFwd1x1_0_2::GetSolution(const ExecutionContext& context,
                                        wksp_offset,
                                        workSpace,
                                        x_t_size,
-                                       GemmBackend_t::rocblas);
+                                       gemm_backend);
             }
 
             if(gemm_status != miopenStatusSuccess)
@@ -536,6 +540,9 @@ ConvSolution GemmFwd1x1_0_1_int8::GetSolution(const ExecutionContext& context,
     auto solution         = ConvSolution{miopenStatusSuccess};
     solution.workspace_sz = workspace_req;
 
+    MIOPEN_LOG_I2("GemmFwd1x1_0_1_int8 GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     TensorDescriptor ygemmDesc(miopenInt32, yDesc.GetLengths(), yDesc.GetStrides());
     const GemmDescriptor tmp_gemm_desc = [&]() {
         auto tmp          = CreateGemmDescriptorConvFwd(wDesc, xDesc, yDesc);
@@ -549,6 +556,7 @@ ConvSolution GemmFwd1x1_0_1_int8::GetSolution(const ExecutionContext& context,
                 tmp.b_cast_type = *wDesc.GetCastType();
         }
         tmp.conv_attributes = problem.GetConv().attribute;
+        tmp.gemm_backend = gemm_backend;
         return tmp;
     }();
     const auto x_type     = xDesc.GetType();
@@ -600,7 +608,7 @@ ConvSolution GemmFwd1x1_0_1_int8::GetSolution(const ExecutionContext& context,
                     time += handle.GetKernelTime();
 
                 gemm_status = CallGemm(
-                    handle, gemm_desc, w, 0, workSpace, 0, y, out_offset, GemmBackend_t::rocblas);
+                    handle, gemm_desc, w, 0, workSpace, 0, y, out_offset, gemm_backend);
 
                 if(gemm_status != miopenStatusSuccess)
                     MIOPEN_THROW("GEMM execution failure");
@@ -682,6 +690,9 @@ ConvSolution GemmFwd1x1_0_1::GetSolution(const ExecutionContext& context,
 
     const auto group_count = conv.group_count;
 
+    MIOPEN_LOG_I2("GemmFwd1x1_0_1 GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     if(group_count > 1)
     {
         const GemmDescriptor tmp_gemm_desc = [&]() {
@@ -696,6 +707,7 @@ ConvSolution GemmFwd1x1_0_1::GetSolution(const ExecutionContext& context,
                     tmp.b_cast_type = *xDesc.GetCastType();
             }
             tmp.conv_attributes = problem.GetConv().attribute;
+            tmp.gemm_backend = gemm_backend;
             return tmp;
         }();
 
@@ -741,7 +753,7 @@ ConvSolution GemmFwd1x1_0_1::GetSolution(const ExecutionContext& context,
                                                          in_offset,
                                                          y,
                                                          out_offset,
-                                                         GemmBackend_t::rocblas);
+                                                         gemm_backend);
 
                     if(gemm_status != miopenStatusSuccess)
                         MIOPEN_THROW("GEMM execution failure");
@@ -773,6 +785,7 @@ ConvSolution GemmFwd1x1_0_1::GetSolution(const ExecutionContext& context,
                     tmp.b_cast_type = *xDesc.GetCastType();
             }
             tmp.conv_attributes = problem.GetConv().attribute;
+            tmp.gemm_backend = gemm_backend;
             return tmp;
         }();
 
@@ -801,7 +814,7 @@ ConvSolution GemmFwd1x1_0_1::GetSolution(const ExecutionContext& context,
                 }();
 
                 gemm_status = CallGemmStridedBatched(
-                    handle, gemm_desc, w, 0, x, 0, y, 0, GemmBackend_t::rocblas);
+                    handle, gemm_desc, w, 0, x, 0, y, 0, gemm_backend);
 
                 if(gemm_status != miopenStatusSuccess)
                     MIOPEN_THROW("GEMM execution failure");
@@ -901,6 +914,9 @@ ConvSolution GemmFwdRest::GetSolution(const ExecutionContext& context,
     auto solution         = ConvSolution{miopenStatusSuccess};
     solution.workspace_sz = workspace_req;
 
+    MIOPEN_LOG_I2("GemmFwdRest GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     solution.invoker_factory = [=](const std::vector<Kernel>&) {
         const auto tmp_gemm_desc = [&]() {
             auto tmp          = conv.group_count > 1
@@ -916,6 +932,7 @@ ConvSolution GemmFwdRest::GetSolution(const ExecutionContext& context,
                     tmp.b_cast_type = *xDesc.GetCastType();
             }
             tmp.conv_attributes = problem.GetConv().attribute;
+            tmp.gemm_backend = gemm_backend;
             return tmp;
         }();
 
@@ -1013,7 +1030,7 @@ ConvSolution GemmFwdRest::GetSolution(const ExecutionContext& context,
                                                          0,
                                                          y,
                                                          out_offset,
-                                                         GemmBackend_t::rocblas);
+                                                         gemm_backend);
                 }
                 else
                 {
@@ -1025,7 +1042,7 @@ ConvSolution GemmFwdRest::GetSolution(const ExecutionContext& context,
                                            wksp_offset,
                                            y,
                                            out_offset,
-                                           GemmBackend_t::rocblas);
+                                           gemm_backend);
                 }
 
                 if(gemm_status != miopenStatusSuccess)

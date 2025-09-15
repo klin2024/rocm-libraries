@@ -724,6 +724,18 @@ inline SolverRegistrar::SolverRegistrar(IdRegistryData& registry)
              Primitive::Fusion,
              fusion::ConvCKIgemmGrpFwdActivFused{}.SolverDbId(),
              miopenConvolutionAlgoImplicitGEMM);
+
+    RegisterWithSolver(registry, ++id, conv::GemmFwd1x1_0_1_hipblaslt{}, miopenConvolutionAlgoGEMM);
+    RegisterWithSolver(registry, ++id, conv::GemmFwd1x1_0_1_int8_hipblaslt{}, miopenConvolutionAlgoGEMM);
+    RegisterWithSolver(registry, ++id, conv::GemmFwd1x1_0_2_hipblaslt{}, miopenConvolutionAlgoGEMM);
+    RegisterWithSolver(registry, ++id, conv::GemmFwdRest_hipblaslt{}, miopenConvolutionAlgoGEMM);
+
+    RegisterWithSolver(registry, ++id, conv::GemmBwd1x1_stride2_hipblaslt{}, miopenConvolutionAlgoGEMM);
+    RegisterWithSolver(registry, ++id, conv::GemmBwd1x1_stride1_hipblaslt{}, miopenConvolutionAlgoGEMM);
+    RegisterWithSolver(registry, ++id, conv::GemmBwdRest_hipblaslt{}, miopenConvolutionAlgoGEMM);
+
+    RegisterWithSolver(registry, ++id, conv::GemmWrw1x1_stride1_hipblaslt{}, miopenConvolutionAlgoGEMM);
+    RegisterWithSolver(registry, ++id, conv::GemmWrwUniversal_hipblaslt{}, miopenConvolutionAlgoGEMM);
     // IMPORTANT: New solvers should be added to the end of the function, and don't leave a white
     // space between this comment and the newly registered solver(s)!
 }

@@ -185,6 +185,9 @@ ConvSolution GemmWrw1x1_stride1::GetSolution(const ExecutionContext&,
         MIOPEN_LOG_FUNCTION("convolution, 1x1");
     }
 
+    MIOPEN_LOG_I2("GemmBwd1x1_stride2 GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     // dw = sum_over_batch(dy[i] * transpose(x[i])), i is batch id
     const auto tmp_gemm_desc = [&]() {
         auto tmp          = group_count > 1
@@ -200,6 +203,7 @@ ConvSolution GemmWrw1x1_stride1::GetSolution(const ExecutionContext&,
                 tmp.b_cast_type = *xDesc.GetCastType();
         }
         tmp.conv_attributes = problem.GetConv().attribute;
+        tmp.gemm_backend = gemm_backend;
         return tmp;
     }();
 
@@ -265,7 +269,7 @@ ConvSolution GemmWrw1x1_stride1::GetSolution(const ExecutionContext&,
                                                                in_offset,
                                                                dw,
                                                                0,
-                                                               GemmBackend_t::rocblas);
+                                                               gemm_backend);
 
                     if(status != miopenStatusSuccess)
                         MIOPEN_THROW("GemmWrw1x1_stride1 execution failure.");
@@ -284,7 +288,7 @@ ConvSolution GemmWrw1x1_stride1::GetSolution(const ExecutionContext&,
             {
                 // dw = sum_over_batch(dy[i] * transpose(x[i])), i is batch id
                 const auto status = CallGemmStridedBatchedSequential(
-                    handle, gemm_desc, dy, 0, x, 0, dw, 0, GemmBackend_t::rocblas);
+                    handle, gemm_desc, dy, 0, x, 0, dw, 0, gemm_backend);
 
                 if(status != miopenStatusSuccess)
                     MIOPEN_THROW("GemmWrw1x1_stride1 execution failure.");
@@ -364,6 +368,9 @@ ConvSolution GemmWrwUniversal::GetSolution(const ExecutionContext& context,
     const auto& conv       = problem.GetConv();
     const auto group_count = conv.group_count;
 
+    MIOPEN_LOG_I2("GemmBwd1x1_stride2 GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     // dw = dy * transpose(Im2Col(x))
     const auto tmp_gemm_desc = [&]() {
         auto tmp          = group_count > 1
@@ -379,6 +386,7 @@ ConvSolution GemmWrwUniversal::GetSolution(const ExecutionContext& context,
                 tmp.b_cast_type = *xDesc.GetCastType();
         }
         tmp.conv_attributes = problem.GetConv().attribute;
+        tmp.gemm_backend = gemm_backend;
         return tmp;
     }();
 
@@ -481,7 +489,7 @@ ConvSolution GemmWrwUniversal::GetSolution(const ExecutionContext& context,
                                                     0,
                                                     dw,
                                                     0,
-                                                    GemmBackend_t::rocblas);
+                                                    gemm_backend);
                 }
                 else
                 {
@@ -494,7 +502,7 @@ ConvSolution GemmWrwUniversal::GetSolution(const ExecutionContext& context,
                                       0,
                                       dw,
                                       0,
-                                      GemmBackend_t::rocblas);
+                                      gemm_backend);
                 }
 
                 if(status != miopenStatusSuccess)

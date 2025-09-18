@@ -230,6 +230,9 @@ ConvSolution GemmBwd1x1_stride2::GetSolution(const ExecutionContext& context,
 
     const auto group_count = conv.group_count;
 
+    MIOPEN_LOG_I2("GemmBwd1x1_stride2 GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     GemmDescriptor tmp_gemm_desc = [&]() {
         auto tmp =
             group_count > 1
@@ -245,6 +248,7 @@ ConvSolution GemmBwd1x1_stride2::GetSolution(const ExecutionContext& context,
                 tmp.b_cast_type = *dyDesc.GetCastType();
         }
         tmp.conv_attributes = problem.GetConv().attribute;
+        tmp.gemm_backend = gemm_backend;
         return tmp;
     }();
     std::size_t in_n, in_c;
@@ -335,7 +339,7 @@ ConvSolution GemmBwd1x1_stride2::GetSolution(const ExecutionContext& context,
                                                      0,
                                                      workspace,
                                                      dyDesc_.GetElementSize(),
-                                                     GemmBackend_t::rocblas);
+                                                     gemm_backend);
             }
             else
             {
@@ -348,7 +352,7 @@ ConvSolution GemmBwd1x1_stride2::GetSolution(const ExecutionContext& context,
                                        0,
                                        workspace,
                                        dyDesc_.GetElementSize(),
-                                       GemmBackend_t::rocblas);
+                                       gemm_backend);
             }
 
             if(gemm_status != miopenStatusSuccess)
@@ -425,6 +429,9 @@ ConvSolution GemmBwd1x1_stride1::GetSolution(const ExecutionContext&,
     const auto group_count = problem.GetConv().group_count;
     const auto spatial_dim = problem.GetConv().GetSpatialDimension();
 
+    MIOPEN_LOG_I2("GemmBwd1x1_stride1 GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     auto solution         = ConvSolution{miopenStatusSuccess};
     solution.workspace_sz = 0;
 
@@ -456,6 +463,7 @@ ConvSolution GemmBwd1x1_stride1::GetSolution(const ExecutionContext&,
                         tmp.b_cast_type = *dyDesc.GetCastType();
                 }
                 tmp.conv_attributes = problem.GetConv().attribute;
+                tmp.gemm_backend = gemm_backend;
                 return tmp;
             }();
 
@@ -510,7 +518,7 @@ ConvSolution GemmBwd1x1_stride1::GetSolution(const ExecutionContext&,
                                                          out_offset,
                                                          dx,
                                                          in_offset,
-                                                         GemmBackend_t::rocblas);
+                                                         gemm_backend);
 
                     if(handle.IsProfilingEnabled())
                         time += handle.GetKernelTime();
@@ -524,7 +532,7 @@ ConvSolution GemmBwd1x1_stride1::GetSolution(const ExecutionContext&,
             else
             {
                 gemm_status = CallGemmStridedBatched(
-                    handle, gemm_desc, w, 0, dy, 0, dx, 0, GemmBackend_t::rocblas);
+                    handle, gemm_desc, w, 0, dy, 0, dx, 0, gemm_backend);
             }
 
             if(gemm_status != miopenStatusSuccess)
@@ -617,6 +625,9 @@ ConvSolution GemmBwdRest::GetSolution(const ExecutionContext& context,
     const auto wei_spatial  = std::vector<std::size_t>(wei_spatial_.begin(), wei_spatial_.end());
     const auto out_spatial  = std::vector<std::size_t>(out_spatial_.begin(), out_spatial_.end());
 
+    MIOPEN_LOG_I2("GemmBwdRest GemmBackend : " << static_cast<int>(GetGemmBackend()));
+    const auto gemm_backend = GetGemmBackend();
+
     // dx = transpose(w) * dy
     const auto tmp_gemm_desc = [&]() {
         auto tmp          = group_count > 1
@@ -632,6 +643,7 @@ ConvSolution GemmBwdRest::GetSolution(const ExecutionContext& context,
                 tmp.b_cast_type = *dyDesc.GetCastType();
         }
         tmp.conv_attributes = problem.GetConv().attribute;
+        tmp.gemm_backend = gemm_backend;
         return tmp;
     }();
     const auto spatial_dims = conv.GetSpatialDimension();
@@ -705,7 +717,7 @@ ConvSolution GemmBwdRest::GetSolution(const ExecutionContext& context,
                                                          out_offset,
                                                          workspace,
                                                          0,
-                                                         GemmBackend_t::rocblas);
+                                                         gemm_backend);
                 }
                 else
                 {
@@ -717,7 +729,7 @@ ConvSolution GemmBwdRest::GetSolution(const ExecutionContext& context,
                                            out_offset,
                                            workspace,
                                            0,
-                                           GemmBackend_t::rocblas);
+                                           gemm_backend);
                 }
 
                 if(gemm_status != miopenStatusSuccess)

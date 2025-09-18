@@ -61,12 +61,25 @@ static auto GetGemmSolvers()
                                            miopen::solver::conv::GemmFwd1x1_0_2,
                                            miopen::solver::conv::GemmFwdRest,
 
+                                           miopen::solver::conv::GemmFwd1x1_0_1_hipblaslt,
+                                           miopen::solver::conv::GemmFwd1x1_0_1_int8_hipblaslt,
+                                           miopen::solver::conv::GemmFwd1x1_0_2_hipblaslt,
+                                           miopen::solver::conv::GemmFwdRest_hipblaslt,
+
                                            miopen::solver::conv::GemmBwd1x1_stride1,
                                            miopen::solver::conv::GemmBwd1x1_stride2,
                                            miopen::solver::conv::GemmBwdRest,
 
+                                           miopen::solver::conv::GemmBwd1x1_stride1_hipblaslt,
+                                           miopen::solver::conv::GemmBwd1x1_stride2_hipblaslt,
+                                           miopen::solver::conv::GemmBwdRest_hipblaslt,
+
                                            miopen::solver::conv::GemmWrw1x1_stride1,
-                                           miopen::solver::conv::GemmWrwUniversal>{};
+                                           miopen::solver::conv::GemmWrwUniversal,
+
+                                           miopen::solver::conv::GemmWrw1x1_stride1_hipblaslt,
+                                           miopen::solver::conv::GemmWrwUniversal_hipblaslt
+                                           >{};
 }
 
 static auto GetDirectSolvers()

@@ -33,12 +33,6 @@
 #include <miopen/conv/data_invoke_params.hpp>
 #include <miopen/solver/problem_description_interpreter.hpp>
 
-// Workaround to disable CK since GFX11 doesn't support specific XDL instances.
-#ifdef MIOPEN_USE_COMPOSABLEKERNEL
-#undef MIOPEN_USE_COMPOSABLEKERNEL
-#define MIOPEN_USE_COMPOSABLEKERNEL 0
-#endif
-
 #if MIOPEN_BACKEND_HIP && MIOPEN_USE_COMPOSABLEKERNEL
 #include <miopen/solver/ck_utility_common.hpp>
 #include <ck/library/tensor_operation_instance/gpu/grouped_convolution_forward_bilinear.hpp>
@@ -382,7 +376,7 @@ void PerformanceConfigHipImplicitGemm3DGroupFwdXdlops::Init(const ProblemDescrip
             return static_cast<std::size_t>(it - valid_kernels.begin());
 
         // Not found: return 0
-        MIOPEN_LOG_E("Not found :" << index << "-" << kernel_id);
+        MIOPEN_LOG_W("Not found :" << index << "-" << kernel_id);
         return 0;
     };
 

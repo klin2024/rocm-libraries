@@ -43,7 +43,14 @@ static inline bool is_ck_whitelist(const std::string& device_name)
 {
     return (StartsWith(device_name, "gfx908") || StartsWith(device_name, "gfx90a") ||
             StartsWith(device_name, "gfx942") || StartsWith(device_name, "gfx950") ||
-            StartsWith(device_name, "gfx1151"));
+            StartsWith(device_name, "gfx1151") ||
+			StartsWith(device_name, "gfx1200") || 
+			StartsWith(device_name, "gfx1201") ||
+			StartsWith(device_name, "gfx1100") ||
+			StartsWith(device_name, "gfx1101") ||
+			StartsWith(device_name, "gfx1102") ||
+			StartsWith(device_name, "gfx1103")
+			);
 }
 
 static inline bool is_ck_whitelist(const Handle& handle)

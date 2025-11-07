@@ -101,7 +101,14 @@ static inline bool IsXdlopsSupport(const ExecutionContext& ctx)
     const bool is_xdlops_supported = ctx.GetStream().GetDeviceName() == "gfx908" ||
                                      ctx.GetStream().GetDeviceName() == "gfx90a" ||
                                      ctx.GetStream().GetDeviceName() == "gfx942" ||
-                                     ctx.GetStream().GetDeviceName() == "gfx1151";
+                                     ctx.GetStream().GetDeviceName() == "gfx1151" || 
+									 ctx.GetStream().GetDeviceName() == "gfx1200" || 
+									 ctx.GetStream().GetDeviceName() == "gfx1201" || 
+									 ctx.GetStream().GetDeviceName() == "gfx1100" || 
+									 ctx.GetStream().GetDeviceName() == "gfx1101" || 
+									 ctx.GetStream().GetDeviceName() == "gfx1102" || 
+									 ctx.GetStream().GetDeviceName() == "gfx1103"
+									 ;
     return is_xdlops_supported && !env::disabled(MIOPEN_DEBUG_CONV_IMPLICIT_GEMM_XDLOPS);
 }
 

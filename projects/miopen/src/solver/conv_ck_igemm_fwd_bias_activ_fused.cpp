@@ -437,7 +437,9 @@ bool ConvCKIgemmFwdBiasActivFused::IsApplicable(const FusionContext& ctx,
     if(!conv_problem.Is2d())
         return false;
     const std::string arch = ctx.GetStream().GetDeviceName();
-    if(arch != "gfx908" && arch != "gfx90a" && arch != "gfx942" && arch != "gfx1151")
+    if(arch != "gfx908" && arch != "gfx90a" && arch != "gfx942" && arch != "gfx1151"
+	   && arch != "gfx1200" && arch != "gfx1201"
+	   && arch != "gfx1100"&& arch != "gfx1101" && arch != "gfx1102" && arch != "gfx1103")
         return false;
     if(!conv_problem.IsLayoutNHWC())
         return false;

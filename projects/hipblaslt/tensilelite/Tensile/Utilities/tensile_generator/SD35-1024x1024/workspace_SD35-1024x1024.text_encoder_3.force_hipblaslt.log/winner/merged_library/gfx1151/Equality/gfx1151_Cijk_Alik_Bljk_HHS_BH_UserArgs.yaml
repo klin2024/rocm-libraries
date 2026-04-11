@@ -1,7 +1,7 @@
-- MinimumRequiredVersion: 5.0.0
+- {MinimumRequiredVersion: 5.0.0}
 - gfx1151
 - gfx1151
-- - Device 1586
+- [Device 1586]
 - Activation: false
   ActivationComputeDataType: 0
   ActivationNoGuard: false
@@ -29,34 +29,17 @@
   Index01A: 0
   Index01B: 1
   Index1: 1
-  IndexAssignmentsA:
-  - 3
-  - 0
-  - 2
-  IndexAssignmentsB:
-  - 3
-  - 1
-  - 2
-  IndexAssignmentsLD:
-  - 4
-  - 5
-  - 6
-  - 7
-  IndexAssignmentsMetadata:
-  - 3
-  - 0
-  - 2
+  IndexAssignmentsA: [3, 0, 2]
+  IndexAssignmentsB: [3, 1, 2]
+  IndexAssignmentsLD: [4, 5, 6, 7]
+  IndexAssignmentsMetadata: [3, 0, 2]
   IndexUnroll: 3
   IndexUnrollA: 0
   IndexUnrollB: 0
   IndexUnrollM: 0
-  IndicesBatch:
-  - 2
-  IndicesFree:
-  - 0
-  - 1
-  IndicesSummation:
-  - 3
+  IndicesBatch: [2]
+  IndicesFree: [0, 1]
+  IndicesSummation: [3]
   MirrorDimsA: []
   MirrorDimsB: []
   MirrorDimsMetadata: []
@@ -143,19 +126,11 @@
     GuaranteeNoPartialA: true
     GuaranteeNoPartialB: true
     GuaranteeNoPartialMetadata: true
-    ISA:
-    - 11
-    - 5
-    - 1
+    ISA: [11, 5, 1]
     InnerUnroll: 1
     InterleaveAlpha: 0
-    InternalSupportParams:
-      KernArgsVersion: 2
-      SupportCustomStaggerU: true
-      SupportCustomWGM: true
-      SupportUserGSU: true
-      UseSFC: false
-      UseUniversalArgs: true
+    InternalSupportParams: {KernArgsVersion: 2, SupportCustomStaggerU: true, SupportCustomWGM: true,
+      SupportUserGSU: true, UseSFC: false, UseUniversalArgs: true}
     Kernel: true
     KernelLanguage: Assembly
     KernelNameMin: Cijk_Alik_Bljk_HHS_BH_UserArgs_MT128x96x16_MI16x16x1_SN_LDSB0_AFC0_AG0_AFEM1_AFEM1_ASEM1_CLR0_CADS0_DTLA0_DTLB0_DTVA0_DTVB0_EPS1_FDSI0_GRPM1_GRVWA8_GRVWB4_GSUAMB_GLS0_ISA1151_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPM0_LPA8_LPB8_LPM0_LRVW16_LWPMn1_MIAV1_MIWT4_3_MO40_NTn1_NTA0_NTB0_NTC0_NTD0_NTM0_NEPBS0_NLCA1_NLCB1_ONLL1_PGR1_PLR0_PKA0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKXCCM0_TLDS1_ULSGRO0_USL1_UIOFGRO0_USFGROn1_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1
@@ -199,25 +174,15 @@
     LoopUnroll: 16
     MFMA_BF16_1K: 0
     MIArchVgpr: true
-    MIBlock:
-    - 16
-    - 16
-    - 16
-    - 1
-    - 1
-    - 1
+    MIBlock: [16, 16, 16, 1, 1, 1]
     MIInputPerThread: 16
     MIInputPerThreadA: 16
     MIInputPerThreadB: 16
     MIInputPerThreadMetadata: 16
     MIOutputVectorWidth: 1
     MIRegPerOut: 1
-    MIWaveGroup:
-    - 2
-    - 2
-    MIWaveTile:
-    - 4
-    - 3
+    MIWaveGroup: [2, 2]
+    MIWaveTile: [4, 3]
     MIWaveTileA: 4
     MIWaveTileB: 3
     MIWaveTileMetadata: 0
@@ -233,11 +198,7 @@
     MatrixInstK: 16
     MatrixInstM: 16
     MatrixInstN: 16
-    MatrixInstruction:
-    - 16
-    - 16
-    - 16
-    - 1
+    MatrixInstruction: [16, 16, 16, 1]
     MaxLDS: 65536
     MaxOccupancy: 40
     MbskPrefetchMethod: 0
@@ -269,22 +230,16 @@
     NumTotalPackedLoadsB: -1
     NumWaveSplitK: 1
     OptNoLoadLoop: 1
-    PackedC0IdxChars:
-    - I
-    PackedC0IndicesX:
-    - 0
-    PackedC1IdxChars:
-    - J
-    PackedC1IndicesX:
-    - 1
+    PackedC0IdxChars: [I]
+    PackedC0IndicesX: [0]
+    PackedC1IdxChars: [J]
+    PackedC1IndicesX: [1]
     PrefetchGlobalRead: 1
     PrefetchLocalRead: 0
     PreloadKernArgs: false
     SFCWGM:
-    - - 1
-      - 1
-    - - 1
-      - 1
+    - [1, 1]
+    - [1, 1]
     ScheduleGlobalRead: 1
     ScheduleIterAlg: 3
     ScheduleLocalWrite: 1
@@ -310,9 +265,7 @@
     SubGroupB: 32
     SuppressNoLoadLoop: false
     SwapGlobalReadOrder: false
-    ThreadTile:
-    - 1
-    - 1
+    ThreadTile: [1, 1]
     ThreadTile0: 32
     ThreadTile1: 3
     ThreadTileA: 32
@@ -345,18 +298,12 @@
     WaveSeparateGlobalReadMetadata: 0
     WaveSplitK: false
     WavefrontSize: 32
-    WorkGroup:
-    - 32
-    - 4
-    - 1
+    WorkGroup: [32, 4, 1]
     WorkGroupMapping: 16
     WorkGroupMappingXCC: 1
     WorkGroupMappingXCCGroup: -1
     WorkGroupReduction: false
-    WorkspaceCheck:
-    - 4
-    - 0
-    - 1
+    WorkspaceCheck: [4, 0, 1]
     _DepthU: 16
     _DepthUA: 16
     _DepthUB: 16
@@ -376,20 +323,9 @@
     reorderGRInstForDTVB: false
     tailLoopOptA: false
     tailLoopOptB: false
-- - 2
-  - 3
-  - 0
-  - 1
-- - - - 77
-      - 77
-      - 64
-      - 64
-      - 77
-      - 77
-      - 64
-      - 64
-    - - 0
-      - 0.81
+- [2, 3, 0, 1]
+- - - [77, 77, 64, 64, 77, 77, 64, 64]
+    - [0, 0.18]
 - null
 - null
 - DeviceEfficiency

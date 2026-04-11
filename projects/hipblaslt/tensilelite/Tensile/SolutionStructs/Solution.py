@@ -587,7 +587,8 @@ class Solution(collections.abc.Mapping):
     if not state["EnableMatrixInstruction"]:
       doable = False
     # only for HasEccHalf
-    if not isaInfoMap[isa].archCaps["HasEccHalf"]:
+    # PATCHED: bypass HasEccHalf for gfx1151 CLR experiment
+    if False and not isaInfoMap[isa].archCaps["HasEccHalf"]:
       doable = False
     # only for PLR>=1 (except for DTVA+B)
     if state["PrefetchLocalRead"] < 1 and not (state["DirectToVgprA"] and state["DirectToVgprB"]):

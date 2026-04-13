@@ -1,0 +1,156 @@
+BenchmarkProblems:
+- - {Batched: true, ComputeDataType: S, DataType: H, DestDataType: H, F32XdlMathOp: 0,
+    HighPrecisionAccumulate: true, OperationType: GEMM, TransposeA: 0, TransposeB: 0,
+    UseBeta: true}
+  - BenchmarkCommonParameters:
+    - KernelLanguage: [Assembly]
+    BenchmarkFinalParameters:
+    - ProblemSizes:
+      - Exact: [4096, 256, 1, 4096]
+      # - Exact: [10240, 256, 1, 4096]
+      # - Exact: [64, 256, 64, 256]
+    - BiasTypeArgs: [S, H]
+    BenchmarkForkParameters: null
+    BenchmarkJoinParameters: null
+    ForkParameters:
+    - MatrixInstruction:
+      # - [32, 32, 8, 1, 2, 1, 2, 1, 1]  # MT 64x32  (適合小 N)
+      # - [32, 32, 8, 1, 4, 1, 4, 1, 1]  # MT 128x32 (適合大 M, 小 N)
+      # - [16, 16, 16, 1, 4, 1, 4, 2, 1] # MT 64x32
+      
+      # # 針對 M=5120 的大型矩陣，保持高吞吐
+      # - [32, 32, 8, 1, 2, 2, 4, 2, 1]  # MT 128x64
+
+
+
+
+      # # # --- WMMA 16x16x16 (最通用、高 Occupancy) ---
+      # - [16, 16, 16, 1, 1, 1, 1, 1, 1]  # MT 16x16
+      # - [16, 16, 16, 1, 1, 1, 2, 1, 1]  # MT 32x16
+      # - [16, 16, 16, 1, 1, 1, 1, 2, 1]  # MT 16x32
+      # - [16, 16, 16, 1, 1, 1, 2, 2, 1]  # MT 32x32
+      # - [16, 16, 16, 1, 1, 1, 4, 2, 1]  # MT 64x32
+      # - [16, 16, 16, 1, 1, 1, 2, 4, 1]  # MT 32x64
+      # - [16, 16, 16, 1, 1, 1, 4, 4, 1]  # MT 64x64
+      # - [16, 16, 16, 1, 1, 1, 8, 4, 1]  # MT 128x64
+      # - [16, 16, 16, 1, 1, 1, 4, 8, 1]  # MT 64x128
+      # - [16, 16, 16, 1, 1, 1, 8, 8, 1]  # MT 128x128
+
+      # # # # --- WMMA 32x32x8 (高效能、高吞吐量) ---
+      # - [32, 32, 8, 1, 1, 1, 1, 1, 1]  # MT 32x32
+      # - [32, 32, 8, 1, 1, 1, 2, 1, 1]  # MT 64x32
+      # - [32, 32, 8, 1, 1, 1, 1, 2, 1]  # MT 32x64
+      # - [32, 32, 8, 1, 1, 1, 2, 2, 1]  # MT 64x64
+      # - [32, 32, 8, 1, 1, 1, 4, 2, 1]  # MT 128x64
+      # - [32, 32, 8, 1, 1, 1, 2, 4, 1]  # MT 64x128
+      # - [32, 32, 8, 1, 1, 1, 4, 4, 1]  # MT 128x128
+      # - [32, 32, 8, 1, 1, 1, 8, 4, 1]  # MT 256x128 (極限尺寸)
+
+      # # # # --- WMMA 32x32x4 (特定格式或較大的指令集) ---
+      # - [32, 32, 4, 2, 1, 1, 1, 1, 1]  # MT 32x32
+      # - [32, 32, 4, 2, 1, 1, 2, 1, 1]  # MT 64x32
+      # - [32, 32, 4, 2, 1, 1, 1, 2, 1]  # MT 32x64
+      # - [32, 32, 4, 2, 1, 1, 2, 2, 1]  # MT 64x64
+
+      # # # # --- 增加 WaveGroup 擴展 (用於平衡 CU 利用率) ---
+      # - [16, 16, 16, 1, 1, 1, 2, 2, 2]  # MT 32x64 (2個Wave在N方向分工)
+      # - [32, 32, 8, 1, 1, 1, 2, 2, 2]  # MT 64x128
+
+      
+
+      # # # --- 策略一：長條型 (針對 N=4096) ---
+      # - [32, 32, 8, 1, 1, 2, 2, 4, 1]  # MT 64x256
+      # - [16, 16, 16, 1, 1, 4, 4, 4, 1] # MT 64x256
+      # - [32, 32, 8, 1, 4, 1, 1, 4, 1]
+      
+      # # # --- 策略二：平衡型 (RDNA3 性能標竿) ---
+      # - [32, 32, 8, 1, 2, 2, 2, 2, 1]  # MT 128x128
+      # - [16, 16, 16, 1, 2, 2, 4, 4, 1] # MT 128x128
+      
+      # # # --- 策略三：非對稱優化 ---
+      # - [32, 32, 8, 1, 2, 2, 2, 3, 1]  # MT 128x192
+      # - [16, 16, 16, 1, 2, 2, 4, 3, 1] # MT 128x192
+      
+      # # # --- 保底 Baseline ---
+      # - [16, 16, 16, 1, 1, 2, 4, 4, 1] # MT 64x128
+
+      #   # ── WMMA 32x32x8，高吞吐量 ──
+      # - [32, 32, 8, 1, 1, 2, 2, 4, 1]  # MT 64x256  ← N=256 完美整除，強烈推薦
+      # - [32, 32, 8, 1, 1, 2, 1, 4, 1]  # MT 32x256
+      # - [32, 32, 8, 1, 2, 2, 2, 4, 1]  # MT 128x256 ← 大 M 時效益高
+      # - [32, 32, 8, 1, 1, 2, 2, 2, 1]  # MT 64x128  ← 高 occupancy 保底
+      # - [32, 32, 8, 1, 2, 2, 2, 2, 1]  # MT 128x128 ← 平衡型
+
+      # ── WMMA 16x16x16，更靈活 ──
+      - [16, 16, 16, 1, 1, 4, 4, 4, 1] # MT 64x256  ← 同上，16x16 版本
+      - [16, 16, 16, 1, 2, 4, 4, 4, 1] # MT 128x256
+      - [16, 16, 16, 1, 1, 2, 4, 4, 1] # MT 64x128
+      - [16, 16, 16, 1, 2, 2, 4, 4, 1] # MT 128x128
+
+    - 1LDSBuffer: [0]
+    - ClusterLocalRead: [1]
+    - WavefrontSize: [32]
+    - DepthU: [32]
+    - DirectToLds: [True]
+    # - WorkGroupMapping: [32, 64, 128]
+    - WorkGroupMapping: [16]
+    - SpaceFillingAlgo: [[1, 0]]
+    - GlobalReadVectorWidthA: [2, 4]
+    - GlobalReadVectorWidthB: [2, 4]
+    - GlobalSplitU: [1, 2]
+    - GlobalSplitUAlgorithm: [MultipleBuffer]
+    - UseSgprForGRO: [-1]
+    - LdsBlockSizePerPadA: [-1]
+    - LdsBlockSizePerPadB: [-1]
+    # - LdsBlockSizePerPadA: [128, 256]
+    # - LdsBlockSizePerPadB: [128, 256]
+    # - LdsPadA: [-1]
+    # - LdsPadB: [-1]
+    - LdsPadA: [0]
+    - LdsPadB: [8]
+    - LdsPadMetadata: [0]
+    - LocalReadVectorWidth: [16]
+    - PrefetchGlobalRead: [2]
+    - PrefetchLocalRead: [1]
+    - PreloadKernArgs: [false]
+    - ScheduleIterAlg: [3]
+    - SourceSwap: [1]
+    - StaggerU: [32]
+    - StaggerUStride: [256]
+    - StaggerUMapping: [0]
+    - StoreVectorWidth: [1]
+    # - StoreVectorWidth: [8]
+    - StoreRemapVectorWidth: [0]
+    - TransposeLDS: [-1]
+    - VectorWidthA: [1]
+    - VectorWidthB: [1]
+    InitialSolutionParameters: null
+    JoinParameters: null
+GlobalParameters:
+  BoundsCheck: 4
+  DataInitTypeAB: 0
+  DataInitTypeAlpha: 1
+  DataInitTypeBeta: 0
+  DataInitValueActivationArgs: [0.5, -1]
+  EnqueuesPerSync: 20
+  KeepBuildTmp: true
+  KernelTime: true
+  MaxEnqueuesPerSync: 20
+  MinFlopsPerSync: 19377684480
+  MinKForGSU: 1
+  NewClient: 2
+  NumElementsToValidate: 0
+  NumWarmups: 50
+  PrintSolutionRejectionReason: false
+  PrintWinnersOnly: true
+  PruneSparseMode: 0
+  SkipSlowSolutionRatio: 0.5
+  ValidationMaxToPrint: 4
+  ValidationPrintValids: false
+  RotatingBufferSize: 512   # enable roating buffer mode to align with hipblaslt QuickTune 
+  RotatingMode: 1
+LibraryLogic:
+  ArchitectureName: gfx1151
+  DeviceNames: [Device 1586]
+  LibraryType: Equality
+  ScheduleName: gfx1151

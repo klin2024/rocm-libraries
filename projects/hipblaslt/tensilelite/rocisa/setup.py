@@ -16,13 +16,17 @@ class CMakeBuild(build_ext):
             os.makedirs(self.build_lib, exist_ok=True)
             source_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
             rocm_path = os.environ.get('ROCM_PATH', '/opt/rocm')
-            compilerpath = os.path.join(rocm_path, 'bin/amdclang++')
+            cc_path = os.environ.get('CC', '/opt/rocm/bin/amdclang')
+            cxx_path = os.environ.get('CXX', '/opt/rocm/bin/amdclang++')
+
             cmakeargs = [
                 "cmake",
                 "--preset rocisa",
                 f"-S{source_dir}",
                 f"-B{self.build_temp}",
-                f"-DCMAKE_CXX_COMPILER={compilerpath}",
+                f"-DCMAKE_CXX_COMPILER={cxx_path}",
+                f"-DCMAKE_C_COMPILER={cc_path}",
+                f"-DCMAKE_PREFIX_PATH={rocm_path}",
                 "-DCMAKE_BUILD_TYPE=Release",
                 f"-DPython_EXECUTABLE={sys.executable}",
             ]

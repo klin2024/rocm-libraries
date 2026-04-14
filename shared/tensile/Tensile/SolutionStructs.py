@@ -2436,7 +2436,9 @@ class Solution(collections.abc.Mapping):
       rejectComment = "VgprForLocalReadPacking is for MatrixInstruction only"
       doable = False
     # only for HasEccHalf
-    if not globalParameters["ArchCaps"][isa]["HasEccHalf"]:
+    # if not globalParameters["ArchCaps"][isa]["HasEccHalf"]:
+    # PATCHED: bypass HasEccHalf check to allow CLR=1 on gfx1151 (experimental)
+    if False and not globalParameters["ArchCaps"][isa]["HasEccHalf"]:
       rejectComment = "VgprForLocalReadPacking is for EccHalf only"
       doable = False
     # only for SIA=3 + PLR>=1

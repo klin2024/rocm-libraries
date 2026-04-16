@@ -24,7 +24,7 @@ set HIP_PLATFORM=amd
 
 rmdir /s /q build
 
-cmake -B build -S . ^
+cmake -B build -S . -G Ninja ^
 -D CMAKE_BUILD_TYPE=Release ^
 -D CMAKE_CXX_COMPILER=%CXX% ^
 -D CMAKE_C_COMPILER=%CC% ^
@@ -41,7 +41,7 @@ cmake -B build -S . ^
 -D HIPBLASLT_ENABLE_CLIENT=OFF ^
 -D CMAKE_PREFIX_PATH="depend/Release"
 
-cmake --build build --target all  --config Release
+cmake --build build  --config Release
 
 if %ERRORLEVEL% EQU 0 (
     echo [SUCCESS] Build completed. Starting installation...

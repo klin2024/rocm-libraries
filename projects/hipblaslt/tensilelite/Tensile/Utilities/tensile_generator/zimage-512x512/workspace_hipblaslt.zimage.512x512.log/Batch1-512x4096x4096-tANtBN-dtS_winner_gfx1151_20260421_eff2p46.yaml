@@ -1,0 +1,88 @@
+BenchmarkProblems:
+- - Batched: true
+    ComputeDataType: S
+    DataType: S
+    DestDataType: S
+    F32XdlMathOp: 0
+    HighPrecisionAccumulate: false
+    OperationType: GEMM
+    TransposeA: 0
+    TransposeB: 0
+    UseBeta: true
+  - BenchmarkCommonParameters:
+    - KernelLanguage:
+      - Assembly
+    BenchmarkFinalParameters:
+    - ProblemSizes:
+      - Exact:
+        - 512
+        - 4096
+        - 1
+        - 4096
+    BenchmarkForkParameters: null
+    BenchmarkJoinParameters: null
+    ForkParameters:
+    - MatrixInstruction:
+      - []
+    - WavefrontSize:
+      - 64
+    - ThreadTile:
+      - - 8
+        - 8
+    - WorkGroup:
+      - - 16
+        - 8
+        - 1
+    - DepthU:
+      - 16
+    - GlobalReadVectorWidthA:
+      - 1
+    - GlobalReadVectorWidthB:
+      - 1
+    - VectorWidthA:
+      - 4
+    - VectorWidthB:
+      - 4
+    - LocalReadVectorWidth:
+      - 4
+    - StoreVectorWidth:
+      - 4
+    - PrefetchLocalRead:
+      - 1
+    - PrefetchGlobalRead:
+      - 1
+    - ScheduleIterAlg:
+      - 1
+    - 1LDSBuffer:
+      - 0
+    - TransposeLDS:
+      - 0
+    - UseSgprForGRO:
+      - 1
+    - WorkGroupMapping:
+      - 1
+    - GlobalSplitU:
+      - 2
+    - GlobalSplitUAlgorithm:
+      - MultipleBuffer
+    - StaggerU:
+      - 0
+    - KernelLanguage:
+      - Assembly
+    InitialSolutionParameters: null
+    JoinParameters: null
+GlobalParameters:
+  MinFlopsPerSync: 1
+  EnqueuesPerSync: 20
+  MaxEnqueuesPerSync: 20
+  NumWarmups: 50
+  BoundsCheck: 4
+  NumElementsToValidate: 0
+  RotatingBufferSize: 512
+  RotatingMode: 1
+LibraryLogic:
+  ArchitectureName: gfx1151
+  DeviceNames:
+  - Device 1586
+  LibraryType: Equality
+  ScheduleName: gfx1151

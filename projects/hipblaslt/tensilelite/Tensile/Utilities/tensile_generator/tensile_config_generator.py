@@ -109,7 +109,9 @@ if ArchitectureName is None:
 
 CU = os.environ.get("CU", None)
 if CU is None:
-    res = subprocess.run("rocminfo | grep Compute", stdout=subprocess.PIPE, shell=True, env={"ROCR_VISIBLE_DEVICES":"0"})
+    cur_env = os.environ.copy()
+    cur_env["ROCR_VISIBLE_DEVICES"] = "0"
+    res = subprocess.run("rocminfo | grep Compute", stdout=subprocess.PIPE, shell=True, env=cur_env)
     match = re.search(CU_RE, res.stdout.decode("utf-8").split('\n')[-2])
     if match:
         CU = int(match.group('COMPUTE_UNIT').strip())
@@ -134,6 +136,11 @@ elif ArchitectureName == 'gfx90a':
     XCC = 1
     DeviceNames = ["Device 0050", "Device 0051", "Device 0052", "Device 0054", "Device 0062", "Device 7400", "Device 740c"]
     ScheduleName = "aldebaran"
+elif ArchitectureName == 'gfx1151':
+    XCC = 0
+    DeviceNames = ["Device 1586"]
+    ScheduleName = "gfx1151"
+
 
 if args.full_mfma:
     fp16_instructions = [[32,32,4,2], [32,32,8,1], [16,16,4,4], [16,16,16,1], [4,4,4,16]]
@@ -482,7 +489,7 @@ def dump_yaml(gpu_idx, gemm_group, yaml_file, m_sum, n_sum, batch_sum, k_sum, sa
         data["BenchmarkProblems"][i][0] = dtype
     data["LibraryLogic"]["DeviceNames"] = DeviceNames
     data["LibraryLogic"]["ScheduleName"] = ScheduleName
-    data["LibraryLogic"]["ArchitectureName"] = {"Architecture": ArchitectureName, "CUCount": CU}
+    data["LibraryLogic"]["ArchitectureName"] = ArchitectureName
     data["LibraryLogic"]["LibraryType"] = LibraryType
     # Write the updated YAML file
     yaml_file = os.path.basename(yaml_file)

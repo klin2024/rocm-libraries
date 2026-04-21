@@ -265,8 +265,6 @@ BenchmarkProblems:
     - StoreRemapVectorWidth: [-1]
     - TransposeLDS: [-1]
     - WorkGroupMapping: [1, 4]
-    - WorkGroupMappingXCC: [1]
-    - WorkGroupMappingXCCGroup: [20]
     - VectorWidthA: [-1]
     - VectorWidthB: [-1]
     InitialSolutionParameters: null
